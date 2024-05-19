@@ -1,0 +1,82 @@
+echo "# JUGANDO-Y-AHORRANDO" >> README.md 
+git init 
+git add README.md 
+git commit -m "first commit" 
+git rama -M main 
+git remoto agregar origen https://github.com/Coraline0324/JUGANDO- Y-AHORRANDO.git
+ git push -u origen principal
+using UnityEngine;
+
+public class CoinCollector : MonoBehaviour
+{
+    public int coinCount = 0;
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Coin"))
+        {
+            coinCount++;
+            Destroy(other.gameObject);
+        }
+    }
+}
+using UnityEngine;
+using UnityEngine.UI;
+
+public class EndGameOptions : MonoBehaviour
+{
+    public CoinCollector coinCollector;
+    public Text endGameText;
+    public Button saveButton;
+    public Button spendButton;
+
+    void Start()
+    {
+        endGameText.gameObject.SetActive(false);
+        saveButton.gameObject.SetActive(false);
+        spendButton.gameObject.SetActive(false);
+    }
+
+    public void EndGame()
+    {
+        endGameText.gameObject.SetActive(true);
+        saveButton.gameObject.SetActive(true);
+        spendButton.gameObject.SetActive(true);
+        endGameText.text = "Has recolectado " + coinCollector.coinCount + " monedas. ¿Quieres ahorrar o gastar?";
+
+        saveButton.onClick.AddListener(SaveCoins);
+        spendButton.onClick.AddListener(SpendCoins);
+    }
+
+    void SaveCoins()
+    {
+        PlayerPrefs.SetInt("SavedCoins", PlayerPrefs.GetInt("SavedCoins") + coinCollector.coinCount);
+        coinCollector.coinCount = 0;
+        endGameText.gameObject.SetActive(false);
+        saveButton.gameObject.SetActive(false);
+        spendButton.gameObject.SetActive(false);
+    }
+
+    void SpendCoins()
+    {
+        // Aquí puedes implementar lógica de gasto, por ejemplo, comprar un artículo
+        coinCollector.coinCount = 0;
+        endGameText.gameObject.SetActive(false);
+        saveButton.gameObject.SetActive(false);
+        spendButton.gameObject.SetActive(false);
+    }
+}
+using UnityEngine;
+
+public class LevelEndTrigger : MonoBehaviour
+{
+    public EndGameOptions endGameOptions;
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            endGameOptions.EndGame();
+        }
+    }
+}
