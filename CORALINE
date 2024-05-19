@@ -1,82 +1,84 @@
-echo "# JUGANDO-Y-AHORRANDO" >> README.md 
-git init 
-git add README.md 
-git commit -m "first commit" 
-git rama -M main 
-git remoto agregar origen https://github.com/Coraline0324/JUGANDO- Y-AHORRANDO.git
- git push -u origen principal
-using UnityEngine;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jugando y Ahorrando</title>
+<style>
+/* Estilos CSS para el juego */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+}
 
-public class CoinCollector : MonoBehaviour
-{
-    public int coinCount = 0;
+#canvas {
+    border: 2px solid #000;
+}
+</style>
+</head>
+<body>
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.CompareTag("Coin"))
-        {
-            coinCount++;
-            Destroy(other.gameObject);
-        }
+<canvas id="canvas" width="480" height="320"></canvas>
+
+<script>
+// Código JavaScript para el juego
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let playerX = canvas.width / 2;
+let playerY = canvas.height / 2;
+let playerSpeed = 5;
+
+let coinCount = 0;
+
+function drawPlayer() {
+    ctx.fillStyle = '#0095DD';
+    ctx.fillRect(playerX - 15, playerY - 15, 30, 30);
+}
+
+function drawCoin(x, y) {
+    ctx.fillStyle = '#FFD700';
+    ctx.beginPath();
+    ctx.arc(x, y, 10, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.closePath();
+}
+
+function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function update() {
+    clearCanvas();
+    drawPlayer();
+    drawCoin(50, 50); // Ejemplo de una moneda en una posición fija
+}
+
+function keyDownHandler(e) {
+    if (e.key === 'ArrowUp' && playerY > 0) {
+        playerY -= playerSpeed;
+    }
+    if (e.key === 'ArrowDown' && playerY < canvas.height) {
+        playerY += playerSpeed;
+    }
+    if (e.key === 'ArrowLeft' && playerX > 0) {
+        playerX -= playerSpeed;
+    }
+    if (e.key === 'ArrowRight' && playerX < canvas.width) {
+        playerX += playerSpeed;
     }
 }
-using UnityEngine;
-using UnityEngine.UI;
 
-public class EndGameOptions : MonoBehaviour
-{
-    public CoinCollector coinCollector;
-    public Text endGameText;
-    public Button saveButton;
-    public Button spendButton;
+document.addEventListener('keydown', keyDownHandler);
 
-    void Start()
-    {
-        endGameText.gameObject.SetActive(false);
-        saveButton.gameObject.SetActive(false);
-        spendButton.gameObject.SetActive(false);
-    }
+setInterval(update, 1000/60); // Actualizar la pantalla a 60 FPS
+</script>
 
-    public void EndGame()
-    {
-        endGameText.gameObject.SetActive(true);
-        saveButton.gameObject.SetActive(true);
-        spendButton.gameObject.SetActive(true);
-        endGameText.text = "Has recolectado " + coinCollector.coinCount + " monedas. ¿Quieres ahorrar o gastar?";
-
-        saveButton.onClick.AddListener(SaveCoins);
-        spendButton.onClick.AddListener(SpendCoins);
-    }
-
-    void SaveCoins()
-    {
-        PlayerPrefs.SetInt("SavedCoins", PlayerPrefs.GetInt("SavedCoins") + coinCollector.coinCount);
-        coinCollector.coinCount = 0;
-        endGameText.gameObject.SetActive(false);
-        saveButton.gameObject.SetActive(false);
-        spendButton.gameObject.SetActive(false);
-    }
-
-    void SpendCoins()
-    {
-        // Aquí puedes implementar lógica de gasto, por ejemplo, comprar un artículo
-        coinCollector.coinCount = 0;
-        endGameText.gameObject.SetActive(false);
-        saveButton.gameObject.SetActive(false);
-        spendButton.gameObject.SetActive(false);
-    }
-}
-using UnityEngine;
-
-public class LevelEndTrigger : MonoBehaviour
-{
-    public EndGameOptions endGameOptions;
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            endGameOptions.EndGame();
-        }
-    }
-}
+</body>
+</html>
